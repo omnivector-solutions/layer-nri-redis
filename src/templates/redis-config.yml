@@ -1,0 +1,23 @@
+---
+integration_name: com.newrelic.redis
+
+instances:
+  - name: redis-metrics
+    command: metrics
+    arguments:
+      # for key, value in metrics_options.items()
+      # if key
+      {{key}}: {{value}}
+      # endif
+      # endfor
+    labels:
+      environment: {{environment}}
+
+  - name: redis-inventory
+    command: inventory
+    arguments:
+      # for key, value in inventory_options.items()
+      {{key}}: {{value}}
+      # endfor
+    labels:
+      environment: {{environment}}

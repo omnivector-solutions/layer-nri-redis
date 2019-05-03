@@ -1,0 +1,19 @@
+---
+name: newrelic-infra
+summary: New Relic infrastructure agent charm with redis integration
+maintainers:
+  - rr_pdl <ryan.redman@peopledatalabs.com>
+  - tylerscheuble <tyler@scheuble.us>
+description: |
+  New Relic infrastructure agent with redis integration
+tags:
+  - misc
+  - analytics
+  - ops
+  - monitoring
+  - performance
+subordinate: true
+requires:
+  host:
+    interface: juju-info
+    scope: container

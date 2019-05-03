@@ -1,0 +1,6 @@
+---
+includes:
+  - layer:basic
+  - layer:apt
+  - layer:status
+  - layer:newrelic-infra
