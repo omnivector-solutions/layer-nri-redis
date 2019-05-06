@@ -1,0 +1,26 @@
+---
+integration_name: com.newrelic.redis
+
+instances:
+  - name: redis-metrics
+    command: metrics
+    arguments:
+      hostname: {{ hostname }}
+      port: {{ port }}
+      keys: {{ keys }}
+      keys_limit: {{ keys_limit }}
+      password: {{ password }}
+
+      remote_monitoring: {{ remote_monitoring }}
+    labels:
+      environment: {{ environment }}
+
+  - name: redis-inventory
+    command: inventory
+    arguments:
+      hostname: {{ hostname }}
+      port: {{ port }}
+
+      remote_monitoring: {{ remote_monitoring }}
+    labels:
+      environment: {{ environment }}

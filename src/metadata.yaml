@@ -1,5 +1,5 @@
 ---
-name: newrelic-infra
+name: nri-redis
 summary: New Relic infrastructure agent charm with redis integration
 maintainers:
   - rr_pdl <ryan.redman@peopledatalabs.com>
@@ -14,6 +14,6 @@ tags:
   - performance
 subordinate: true
 requires:
-  host:
+  general-info:
     interface: juju-info
     scope: container

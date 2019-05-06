@@ -1,59 +1,60 @@
-from pathlib import Path
+from charms import (
+    apt
+)
 
-from charmhelpers.core.hookenv import config
-from charmhelpers.core.templating import render
+from charmhelpers.core.hookenv import (
+    config,
+    status_set,
+)
 
 from charms.reactive import (
     when,
     when_not,
-    set_flag,
     hook,
+    set_flag,
     clear_flag,
 )
 
-from charms import apt
-from charms.layer import status
+from charmhelpers.core.templating import (
+    render
+)
+
+import os
 
 
-CONFIG_PATH = Path('/etc/newrelic-infra/integrations.d/redis-config.yml')
+TEMPLATE_FILE = 'redis-config.tmpl'
+CONFIG_FILE = '/etc/newrelic-infra/integrations.d/redis-config.yml'
 
 
-@when('newrelic-infra.ready'
-      'apt.installed.nri-redis')
-@when_not('newrelic-infra.redis.configured')
+@when('newrelic-infra.ready')
+@when_not('nri-redis.configured')
 def configure():
-    status.maint('Configuring nri-redis')
-
-    context = {
-            'metrics_options': {
-                'hostname': config('redis_hostname'),
-                'port': config('redis_port'),
-                'keys': config('redis_keys'),
-                'keys_limit': config('redis_keys_limit'),
-                'password': config('redis_password'),
+    render(source=TEMPLATE_FILE,
+           target=CONFIG_FILE,
+           context={
+                'hostname': config('hostname'),
+                'port': config('port'),
+                'keys': config('keys'),
+                'keys_limit': config('keys_limit'),
+                'password': config('password'),
                 'remote_monitoring': True,
-            },
-            # TODO: support for more inventory options
-            'inventory_options': {
-                'hostname': config('redis_hostname'),
-                'port': config('redis_port'),
-                'remote_monitoring': True,
-            },
-            'environment': config('environment'),
-    }
+                'environment': config('environment'),
+            })
 
-    render(source=config('redis-config.yml'),
-           target=str(CONFIG_PATH),
-           context=context)
-
-    set_flag('newrelic-infra.redis.configured')
+    set_flag('nri-redis.configured')
+    status_set('active', 'nri-redis ready')
 
 
 @when('config.changed')
 def reconfigure():
-    clear_flag('newrelic-infra.redis.configured')
+    clear_flag('nri-redis.configured')
 
 
 @hook('stop')
 def uninstall():
+    status_set('maintenance', "Removing nri-redis")
+
+    if os.path.isfile(CONFIG_FILE):
+        os.remove(CONFIG_FILE)
+
     apt.purge(['nri-redis'])
