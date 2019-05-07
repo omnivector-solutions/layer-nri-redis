@@ -15,6 +15,10 @@ from charms.reactive import (
     clear_flag,
 )
 
+from charmhelpers.core.host import (
+    service_restart,
+)
+
 from charmhelpers.core.templating import (
     render
 )
@@ -42,12 +46,20 @@ def configure():
             })
 
     set_flag('nri-redis.configured')
+
+    service_restart('newrelic-infra')
     status_set('active', 'nri-redis ready')
 
 
 @when('config.changed')
 def reconfigure():
     clear_flag('nri-redis.configured')
+
+
+@when('nri-redis.configured')
+def verify_config_exists():
+    if not os.path.isfile(CONFIG_FILE):
+        clear_flag('nri-redis.configured')
 
 
 @hook('stop')
