@@ -20,7 +20,7 @@ To configure the `license_key` following deployment use `juju config`.
 juju config nri-redis license_key=<newrelic_key>
 ```
 
-To remove the `newrelic-infra` agent, simply remove the application or unit.
+To remove the `newrelic-infra` agent and `nri-redis` host integration, simply remove the `redis-nri` application or unit.
 
 
 #### License
