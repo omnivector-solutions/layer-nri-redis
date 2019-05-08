@@ -1,5 +1,6 @@
 ---
 name: nri-redis
+display-name: nri-redis
 summary: New Relic infrastructure agent charm with redis integration
 maintainers:
   - rr_pdl <ryan.redman@peopledatalabs.com>
